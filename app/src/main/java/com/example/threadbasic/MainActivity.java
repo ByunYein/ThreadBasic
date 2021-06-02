@@ -7,9 +7,9 @@ import android.os.Bundle;
 import android.util.Log;
 
 public class MainActivity extends AppCompatActivity {
-    WorkerThread w;
+    Thread w, w2;
     boolean running = true;
-    String TAG = "TheRead";
+    String TAG = "Thread";
 
     class WorkerThread extends  Thread{
         public void run(){
@@ -31,12 +31,32 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.v(TAG,"Now I am in onCreate");
+
+
     }
+
 
     @Override
     protected void onStart() {
         super.onStart();
         w =new WorkerThread();
+
+        w2 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int i= 0;
+                for(i=0; i<20 &&running; i++){
+                    try{
+                        Thread.sleep(1000);
+
+                    }catch (InterruptedException e){
+                        Log.v(TAG,"Runnable time = "+i);
+                    }
+                }
+            }
+        });
+        w2.start();
+        Log.v(TAG,"Now I am in onstart (runnable)");
         running = true;
         w.start();
         Log.v(TAG,"Now I am in onstart");
@@ -46,12 +66,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         running = false;
+
         Log.v(TAG,"Now I am in onstop");
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+
         Log.v(TAG,"Now I am in onpause");
 
     }
@@ -59,6 +82,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
         Log.v(TAG,"Now I am in onresume");
     }
+
+
+
 }
+
